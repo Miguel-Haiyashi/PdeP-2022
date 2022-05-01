@@ -1,0 +1,52 @@
+
+type Producto = (String, Int)
+
+precioTotal :: Producto -> Int -> Int -> Int -> Producto
+precioTotal unProducto cantidad descuento costoEnvio = (aplicarDescuento unProducto descuento) * cantidad + costoEnvio
+
+aplicarDescuento :: Int -> Producto -> Producto
+aplicarDescuento descuento (_, precio) = (_, precio - descuento)
+
+aplicarCostoDeEnvio :: Producto -> Int -> Producto
+aplicarCostoDeEnvio (_ , precio) costoEnvio = (_ , precio + costoEnvio)
+
+entregaSencilla :: String -> Bool    
+entregaSencilla dia = esPar . length $ dia
+
+esPar:: Int -> Bool
+esPar unValor = (==0).(rem unValor) $ 2
+
+descodiciarProducto :: Producto -> Producto 
+descodiciarProducto (nombre, precio) = (take 10 nombre, precio)
+
+productoDeLujo :: Producto -> Bool  
+productoDeLujo unProducto = (tieneCaracter 'x') . nombreDelProducto $ unProducto || (tieneCaracter 'z') . nombreDelProducto $ unProducto
+
+tieneCaracter :: Char -> String -> Bool
+tieneCaracter caracter palabra = elem caracter palabra
+
+nombreDelProducto :: Producto -> String
+nombreDelProducto (nombreProducto, _) = nombreProducto
+
+productoXL :: Producto -> Producto
+productoXL (nombre, _) = (nombre ++ "XL", _)
+
+productoCorriente :: Producto -> Bool   
+productoCorriente unProducto = empiezaConVocal . nombreDelProducto $ unProducto
+
+empiezaConVocal :: String -> Bool
+empiezaConVocal palabra = (elem esVocal) . head $ palabra
+
+esVocal :: String
+esVocal = "aeiouáéíóúAEIOUÁÉÍÓÚ"
+
+productoCodiciado :: Producto -> Bool
+productoCodiciado unProducto = (>10) . length . nombreDelProducto $ unProducto
+
+productoDeElite :: Producto -> Bool
+productoDeElite unProducto = productoDeLujo unProducto && productoCodiciado unProducto && not (productoCorriente unProducto)
+
+versionBarata :: Producto -> Producto
+versionBarata (nombre, precio) = (reverse . descodiciarProducto $ nombre , precio)
+
+
